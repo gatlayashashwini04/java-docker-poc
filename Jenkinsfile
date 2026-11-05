@@ -1,4 +1,8 @@
-
+git branch: 'main'
+    url: 'https://github.com/gatlayashashwini04/java-docker-poc.git'git branch: 'main',
+    url: 'https://github.com/gatlayashashwini04/java-docker-poc.gitgit branch: 'main',
+    url: 'https://github.com/gatlayashashwini04/java-docker-poc.git'git branch: 'main',
+    url: 'https://github.com/gatlayashashwini04/java-docker-poc.git'
 pipeline {
     agent any
 
@@ -20,7 +24,7 @@ pipeline {
                 echo 'Checking out source code'
 
                 git branch: 'main',
-                    url: 'https://github.com/YOUR_GITHUB_USERNAME/java-docker-poc.git'
+                    url: 'https://github.com/gatlayashashwini04/java-docker-poc.git'
             }
         }
 
