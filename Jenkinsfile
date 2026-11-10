@@ -26,17 +26,19 @@ pipeline {
         }
 
         // 2. Maven Build using Docker
-        stage('2. Maven Build') {
+          stage('Maven Build') {
             steps {
                 sh '''
-                    docker run --rm \
-                        -v "$WORKSPACE":/app \
-                        -w /app \
-                        maven:3.9.9-eclipse-temurin-17 \
-                        mvn clean package -DskipTests
+                  docker run --rm \
+                  -v jenkins_home:/var/jenkins_home \
+                  -w "$WORKSPACE" \
+                  maven:3.9.9-eclipse-temurin-17 \
+                  mvn clean package -DskipTests
                 '''
-            }
+          }
         }
+ 
+
 
         // 3. Docker Build
         stage('3. Docker Build') {
