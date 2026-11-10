@@ -25,17 +25,25 @@ pipeline {
             }
         }
 
-        // 2. Maven Build
+        // 2. Maven Build using Docker
         stage('2. Maven Build') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                sh '''
+                    docker run --rm \
+                        -v "$WORKSPACE":/app \
+                        -w /app \
+                        maven:3.9.9-eclipse-temurin-17 \
+                        mvn clean package -DskipTests
+                '''
             }
         }
 
         // 3. Docker Build
         stage('3. Docker Build') {
             steps {
-                sh 'docker build -t ${DOCKER_IMAGE}:latest .'
+                sh '''
+                    docker build -t ${DOCKER_IMAGE}:latest .
+                '''
             }
         }
 
@@ -64,14 +72,14 @@ pipeline {
         // 5. Launch Container
         stage('5. Launch Container') {
             steps {
-                sh """
-                    docker rm -f ${CONTAINER_NAME} || true
+                sh '''
+                    docker rm -f java-docker-app || true
 
                     docker run -d \
-                        --name ${CONTAINER_NAME} \
-                        -p ${APP_PORT}:8080 \
+                        --name java-docker-app \
+                        -p 8080:8080 \
                         ${DOCKER_IMAGE}:latest
-                """
+                '''
             }
         }
 
@@ -102,21 +110,21 @@ pipeline {
         // 7. Kill Container
         stage('7. Kill Container') {
             steps {
-                sh """
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm ${CONTAINER_NAME} || true
-                """
+                sh '''
+                    docker stop java-docker-app || true
+                    docker rm java-docker-app || true
+                '''
             }
         }
     }
 
     post {
         success {
-            echo 'SUCCESS: Jenkins pipeline completed!'
+            echo 'SUCCESS: Jenkins pipeline completed successfully!'
         }
 
         failure {
-            echo 'FAILURE: Please check the Console Output.'
+            echo 'FAILURE: Please check Console Output.'
         }
 
         always {
