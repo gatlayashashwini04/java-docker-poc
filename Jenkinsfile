@@ -3,14 +3,14 @@ pipeline {
     agent any
 
     environment {
-        // GitHub repository
-        GITHUB_URL = 'https://github.com/YOUR_USERNAME/java-docker-poc.git'
+        // GitHub Repository
+        GITHUB_URL = 'https://github.com/gatlayashashwini04/java-docker-poc.git'
 
-        // Docker Hub configuration
+        // Docker Hub Configuration
         DOCKER_IMAGE = 'YOUR_DOCKERHUB_USERNAME/java-docker-poc'
         DOCKER_CREDENTIALS = 'dockerhub-credentials'
 
-        // Application configuration
+        // Application Configuration
         CONTAINER_NAME = 'java-docker-app'
         APP_PORT = '8080'
     }
@@ -21,7 +21,6 @@ pipeline {
         stage('1. Git Checkout') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'github-credentials',
                     url: "${GITHUB_URL}"
             }
         }
@@ -36,9 +35,7 @@ pipeline {
         // 3. Docker Build
         stage('3. Docker Build') {
             steps {
-                sh """
-                    docker build -t ${DOCKER_IMAGE}:latest .
-                """
+                sh 'docker build -t ${DOCKER_IMAGE}:latest .'
             }
         }
 
@@ -82,7 +79,7 @@ pipeline {
         stage('6. Test Website using CURL') {
             steps {
                 sh '''
-                    echo "Testing application..."
+                    echo "Testing Java application..."
 
                     for i in $(seq 1 30); do
                         if curl -fsS http://localhost:8080/; then
@@ -94,7 +91,9 @@ pipeline {
                     done
 
                     echo "Application failed to respond"
+
                     docker logs java-docker-app
+
                     exit 1
                 '''
             }
@@ -113,11 +112,11 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'SUCCESS: Jenkins pipeline completed!'
         }
 
         failure {
-            echo 'Pipeline failed. Please check Console Output.'
+            echo 'FAILURE: Please check the Console Output.'
         }
 
         always {
